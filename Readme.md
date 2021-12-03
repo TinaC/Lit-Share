@@ -38,10 +38,29 @@ Web Components consists of three main technologies
 
 ---
 
-# Why we choose Lit
+# Why We Choose Lit?
 
 ---
 
 # Glossary
 
 ## Fiori
+
+> Design Guideline / Design System
+
+[Homepage](https://www.sap.com/sea/products/fiori.html)
+[Internal Spec](https://wiki.wdf.sap.corp/wiki/pages/viewpage.action?pageId=2020615073)
+
+## SAPUI5
+
+> MVC Framework + Rich Control Library
+
+[Homepage](https://sapui5.hana.ondemand.com/)
+
+## UI Integration Cards
+
+>
+
+> Used in Work Zone Page Editor
+
+[Homepage]()
