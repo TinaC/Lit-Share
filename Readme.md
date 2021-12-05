@@ -139,4 +139,79 @@ Used in WorkZone: AI Bots, Profile Avatar...
 
 # Lit
 
-[Homepage]()
+- Make it easier to build a web component
+- Successor of Polymer Project, launched in 2015 by Google.
+
+Core technologies:
+
+- `lit-element`: a quick way to define web components
+- `lit-html`: HTML templating library
+
+[Homepage](https://lit.dev/)
+[Sample](https://lit.dev/playground/#sample=examples/full-component)
+
+---
+
+# Template / lit-html
+
+> Lit templates can include JavaScript expression.
+
+> [React JSX](https://reactjs.org/docs/introducing-jsx.html): JSX may remind you of a [template language](https://stackoverflow.com/questions/13654009/executing-javascript-inside-handlebars-template)(such as Handlebars), but it comes with the full power of JavaScript.
+
+[Expressions in Template, DEMO](https://lit.dev/playground/#sample=examples/expressions)
+
+---
+
+| Type                                                                                                      | Example                                                                             |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Child nodes                                                                                               | `` html`<main>${bodyText}</main>` `` (TemplateResult, DOM, Primitive values, Array) |
+| Properties                                                                                                | `` html`<input .value=${value}>` ``                                                 |
+| [Boolean Attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) | `` html`<div ?hidden=${!show}></div>` ``                                            |
+| Attributes                                                                                                | `` html`<div class=${highlightClass}></div>` ``                                     |
+| Event listeners                                                                                           | `` html`<button @click=${this.\_clickHandler}>Go</button>` ``                       |
+
+---
+
+# React props and state
+
+```js
+function Welcome(props) {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  tick() {
+    this.setState({date: new Date() });
+  }
+
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const element = <Welcome name="Sara" />;
+```
+
+> State is similar to props, but it is private and fully controlled by the component.
+> State Updates May Be Asynchronous
+> React may batch multiple `setState()` calls into a single update for performance.
+
+---
+
+# Props and State
+
+- Reactive updates [DEMO](https://lit.dev/playground/#sample=examples/properties-has-changed)
+- Attribute handling
+- Superclass properties
+- Element upgrade
+
+```js
+class MyElement extends LitElement {
+  @property()
+  name: string;
+
+  @state()
+  protected _active = false;
+}
+```
+
+---
