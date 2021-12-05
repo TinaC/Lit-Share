@@ -92,7 +92,7 @@ As SAPUI5 is too heavy...
 
 - Light-weight **Web Component** control library
 
-- native DOM/Javascript API only
+- Native DOM/Javascript API only
 
 Heavily used in CEP
 
@@ -131,7 +131,7 @@ Used in WorkZone: AI Bots, Profile Avatar...
 > UI5 Web Components' standard build tools
 
 - Based on Lit
-- No Typescript support
+- No Typescript Support
 
 [Doc](https://github.com/SAP/ui5-webcomponents/tree/master/docs/5-development)
 
@@ -162,44 +162,24 @@ Core technologies:
 
 ---
 
+# Expressions
+
 | Type                                                                                                      | Example                                                                             |
 | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | Child nodes                                                                                               | `` html`<main>${bodyText}</main>` `` (TemplateResult, DOM, Primitive values, Array) |
-| Properties                                                                                                | `` html`<input .value=${value}>` ``                                                 |
-| [Boolean Attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) | `` html`<div ?hidden=${!show}></div>` ``                                            |
 | Attributes                                                                                                | `` html`<div class=${highlightClass}></div>` ``                                     |
+| [Boolean Attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) | `` html`<div ?hidden=${!show}></div>` ``                                            |
+| Properties                                                                                                | `` html`<input .value=${value}>` ``                                                 |
 | Event listeners                                                                                           | `` html`<button @click=${this.\_clickHandler}>Go</button>` ``                       |
 
----
-
-# React props and state
-
-```js
-function Welcome(props) {
-  constructor(props) {
-    super(props);
-    this.state = {date: new Date()};
-  }
-
-  tick() {
-    this.setState({date: new Date() });
-  }
-
-  return <h1>Hello, {props.name}</h1>;
-}
-
-const element = <Welcome name="Sara" />;
-```
-
-> State is similar to props, but it is private and fully controlled by the component.
-> State Updates May Be Asynchronous
-> React may batch multiple `setState()` calls into a single update for performance.
+HTML attribute is case-insensitive, always string typed.
+[Further Reading: HTML attribute vs DOM Object properties](https://javascript.info/dom-attributes-and-properties)
 
 ---
 
 # Props and State
 
-- Reactive updates [DEMO](https://lit.dev/playground/#sample=examples/properties-has-changed)
+- Reactive updates
 - Attribute handling
 - Superclass properties
 - Element upgrade
@@ -214,4 +194,74 @@ class MyElement extends LitElement {
 }
 ```
 
+[Property change DEMO](https://lit.dev/playground/#sample=examples/properties-has-changed)
+
 ---
+
+# React props and state
+
+> **Props** are Read-Only, must never modify its own props. (Not in lit)
+
+> **State** is similar to props, but it is private and fully controlled by the component.
+> **State** Updates May Be Asynchronous
+> React may batch multiple `setState()` calls into a single update for performance.
+
+# Lit
+
+When a reactive property changes, the component schedules an update.
+**Internal reactive state** refers to **reactive properties** that aren't part of the component's API.
+~~**State properties** don't have corresponding attributes.~~
+**Internal reactive state** works just like public reactive properties, except that there is no attribute associated with the property.
+
+---
+
+# Downside of Lit
+
+- We abandoned `shadow DOM` in CEP. [Sample](https://lit.dev/docs/components/shadow-dom/#implementing-createrenderroot)
+  - UI Integration Cards
+  - TinyMCE Editor
+
+---
+
+# Render the template into the main DOM tree
+
+```js
+// Default
+protected createRenderRoot(): Element|ShadowRoot {
+  return this.attachShadow({mode: 'open'});
+}
+
+// Note, styling leaks in
+override createRenderRoot(): LitElement {
+  return this;
+}
+```
+
+---
+
+# How we handle Style Collision now?
+
+```css
+SAP-SHELL-SECTION .container {
+  --ui5_padding_left_right: calc(2rem + 0.1875rem);
+}
+
+SAP-SHELL-PAGE .page-heading {
+  display: none;
+  width: var(--shell-container-width);
+}
+```
+
+Q: What's the potential risk of this approach?
+
+---
+
+# Downside of Lit
+
+- As the app gets complicated, Lit could not satisfied the requirement.
+  - Router
+  - Redux, State Store
+
+---
+
+# Thanks
