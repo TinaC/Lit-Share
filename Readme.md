@@ -113,7 +113,7 @@ Heavily used in CEP
 > Wrapper for UI5 Web Components in React
 > Returns `React Elements` instead of `HTML Elements`
 
-Used in WorkZone: AI Bots, Profile Avatar...
+Used in WorkZone new features: AI Bots, Profile Avatar...
 
 [Github](https://github.com/SAP/ui5-webcomponents-react)
 
@@ -223,26 +223,52 @@ myDiv.foo = "bar";
 
 Reference:
 [HTML attribute vs DOM Object properties](https://javascript.info/dom-attributes-and-properties)
-[Knowledge: Attributes and properties](https://open-wc.org/guides/knowledge/attributes-and-properties/)
+[Web Component: Attributes and properties](https://open-wc.org/guides/knowledge/attributes-and-properties/)
 
 ---
 
 # Attribute Reflection
 
 Most native attributes are synced to the javascript object, but not all native properties are reflected up to attributes.
+[NEED TO CHANGE]
+
+```html
+<body id="test" something="non-standard">
+  <script>
+    alert(document.body.id); // test
+    // non-standard attribute does not yield a property
+    alert(document.body.something); // undefined
+  </script>
+</body>
+```
+
+---
+
+# Lit Reflection
+
 Attribute -> Property
 Property -> Attribute (Not recommend, Attribute as the initial state)
 
+[Reflection DEMO](https://lit.dev/playground/#sample=properties/attributereflect)
+
 ```js
 // Value of property "active" will reflect to attribute "active"
-active: {
-  reflect: true;
-}
+@property({type: Boolean, reflect: true})
+active: boolean = false;
 ```
 
 ---
 
 # Property and Attributes converter
+
+[Default converter: type option](https://lit.dev/docs/components/properties/#conversion-type)
+
+```js
+// Use the default converter
+@property({ type: Number })
+```
+
+Custom converter:
 
 ```js
 prop1: {
@@ -308,7 +334,19 @@ myEl.items = {
   ...myEl.items,
   changed: newVal,
 };
+
+// Or
+this.requstUpdate();
 ```
+
+---
+
+# Omission
+
+- Lifecycle
+- Events
+- Decorators, `@query`, `@property` ...
+- Template Directives, `classMap`, `until` ...
 
 ---
 
@@ -316,7 +354,10 @@ myEl.items = {
 
 - We abandoned `shadow DOM` in CEP. [Sample](https://lit.dev/docs/components/shadow-dom/#implementing-createrenderroot)
   - UI Integration Cards `this.byId()`
-  - TinyMCE Editor
+
+```
+get shadowdomapi
+```
 
 ---
 
@@ -337,6 +378,8 @@ override createRenderRoot(): LitElement {
 ---
 
 # How we handle Style Collision now?
+
+SAP-SHELL-SECTION 是什么
 
 ```css
 SAP-SHELL-SECTION .container {
@@ -364,7 +407,7 @@ CHILD-COMPONENT .container {
   margin: 0;
 }
 
-// Forbidden
+// Element selector is Forbidden
 PARENT-COMPONENT span {
   color: blue;
 }
@@ -372,7 +415,7 @@ PARENT-COMPONENT span {
 
 ---
 
-[Styled Component](https://styled-components.com/docs)
+# [Styled Component](https://styled-components.com/docs)
 
 ```css
 .hEYqLS {
@@ -386,7 +429,7 @@ PARENT-COMPONENT span {
 
 ---
 
-# Downside of Lit
+# Downside of Lit - Ecosystem
 
 - As the app gets complicated, Lit could not satisfied the requirement.
   - Router
