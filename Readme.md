@@ -32,17 +32,21 @@ Tina Chen
 
 # Web Component
 
-> Web Components is a suite of different technologies allowing you to create **reusable** custom elements — with their functionality **encapsulated** away from the rest of your code — and utilize them in your web apps.
+> Web components are a set of **web platform APIs** that allow you to create new custom, reusable, encapsulated HTML tags to use in web pages and web apps
+> [Defined in the HTML Living Standard specification](https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements)
 
 Web Components consists of three main technologies
 
-- Custom elements
+- Custom elements - Custom HTML tag name
 - Shadow DOM - Avoid collision [Demo](https://codepen.io/tinac/pen/LYzVBzG)
 - HTML templates: `<template>` `<slot>` - Reusable [Demo](https://codepen.io/tinac/pen/YzrXjEN)
 
 ---
 
 # Why We Choose Lit?
+
+~~[Libraries](https://www.webcomponents.org/libraries)~~
+[Libraries](https://open-wc.org/guides/community/base-libraries/)
 
 ---
 
@@ -54,6 +58,8 @@ Web Components consists of three main technologies
 
 [Homepage](https://www.sap.com/sea/products/fiori.html)
 [Internal Spec](https://wiki.wdf.sap.corp/wiki/pages/viewpage.action?pageId=2020615073)
+[Theme Parameter Toolbox](https://ui5.sap.com/test-resources/sap/m/demokit/theming/webapp/index.html)
+[Sematic Color](https://wiki.wdf.sap.corp/wiki/pages/viewpage.action?pageId=2144577672)
 
 ---
 
@@ -75,7 +81,7 @@ Web Components consists of three main technologies
 
 # UI Integration Cards
 
-> A variety of card types can be configured by a simple JSON configuration (schema) without the need to write code for UI rendering.
+> Card is configured by a simple JSON configuration (schema) without the need to write code for UI rendering.
 > But Component Card allows the integration of UI5 Components as content.
 
 Used in Work Zone / CEP Page Editor
@@ -84,7 +90,7 @@ Used in Work Zone / CEP Page Editor
 
 ---
 
-As SAPUI5 is too heavy...
+As SAPUI5 is too heavy and hard to integrate with others...
 
 # UI5 Web Component
 
@@ -93,6 +99,8 @@ As SAPUI5 is too heavy...
 - Light-weight **Web Component** control library
 
 - Native DOM/Javascript API only
+
+- Less controls than SAPUI5 :(
 
 Heavily used in CEP
 
@@ -133,7 +141,7 @@ Used in WorkZone: AI Bots, Profile Avatar...
 - Based on Lit
 - No Typescript Support
 
-[Doc](https://github.com/SAP/ui5-webcomponents/tree/master/docs/5-development)
+[Documentation](https://github.com/SAP/ui5-webcomponents/tree/master/docs/5-development)
 
 ---
 
@@ -145,7 +153,7 @@ Used in WorkZone: AI Bots, Profile Avatar...
 Core technologies:
 
 - `lit-element`: a quick way to define web components
-- `lit-html`: HTML templating library
+- `lit-html`: a powerful HTML templating library
 
 [Homepage](https://lit.dev/)
 [Sample](https://lit.dev/playground/#sample=examples/full-component)
@@ -164,25 +172,96 @@ Core technologies:
 
 # Expressions
 
-| Type                                                                                                      | Example                                                                             |
-| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Child nodes                                                                                               | `` html`<main>${bodyText}</main>` `` (TemplateResult, DOM, Primitive values, Array) |
-| Attributes                                                                                                | `` html`<div class=${highlightClass}></div>` ``                                     |
-| [Boolean Attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) | `` html`<div ?hidden=${!show}></div>` ``                                            |
-| Properties                                                                                                | `` html`<input .value=${value}>` ``                                                 |
-| Event listeners                                                                                           | `` html`<button @click=${this.\_clickHandler}>Go</button>` ``                       |
-
-HTML attribute is case-insensitive, always string typed.
-[Further Reading: HTML attribute vs DOM Object properties](https://javascript.info/dom-attributes-and-properties)
+| Type                                                                                                      | Example                                                      |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Child nodes                                                                                               | `` html`<main>${bodyText}</main>` ``                         |
+| Attributes                                                                                                | `` html`<div class=${highlightClass}></div>` ``              |
+| [Boolean Attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) | `` html`<div ?hidden=${!show}></div>` ``                     |
+| Properties                                                                                                | `` html`<input .value=${value}>` ``                          |
+| Event listeners                                                                                           | `` html`<button @click=${this._clickHandler}>Go</button>` `` |
 
 ---
 
-# Props and State
+# Properties vs. Attribute (Native Concept)
 
-- Reactive updates
-- Attribute handling
-- Superclass properties
-- Element upgrade
+- Attribute
+
+Attributes are key-value pairs defined in **HTML** on an element.
+HTML attribute is **case-insensitive**.
+Because HTML is string-based, attributes can **only be strings**.
+
+```js
+<div id="myDiv" foo="bar"></div>;
+
+const myDiv = document.getElementById("myDiv");
+
+console.log(myDiv.attributes);
+console.log(myDiv.getAttribute("foo"));
+console.log(myDiv.hasAttribute("foo"));
+
+myDiv.setAttribute("foo", "not-bar");
+```
+
+---
+
+# Properties vs. Attribute
+
+- Properties
+
+Properties are key-value pairs defined on a javascript object(Possibly DOM object).
+A great benefit of properties is that they can accept any javascript value, including **complex objects and arrays**.
+
+```js
+const myObject = {};
+// a property is set
+myObject.foo = "bar";
+
+const myDiv = document.getElementById("myDiv");
+// set properties on DOM elements
+myDiv.foo = "bar";
+```
+
+Reference:
+[HTML attribute vs DOM Object properties](https://javascript.info/dom-attributes-and-properties)
+[Knowledge: Attributes and properties](https://open-wc.org/guides/knowledge/attributes-and-properties/)
+
+---
+
+# Attribute Reflection
+
+Most native attributes are synced to the javascript object, but not all native properties are reflected up to attributes.
+Attribute -> Property
+Property -> Attribute (Not recommend, Attribute as the initial state)
+
+```js
+// Value of property "active" will reflect to attribute "active"
+active: {
+  reflect: true;
+}
+```
+
+---
+
+# Property and Attributes converter
+
+```js
+prop1: {
+  converter: {
+    fromAttribute: (value, type) => {
+      // `value` is a string
+      // Convert it to a value of type `type` and return it
+    },
+    toAttribute: (value, type) => {
+      // `value` is of type `type`
+      // Convert it to a string and return it
+    }
+  }
+}
+```
+
+---
+
+# Property and State
 
 ```js
 class MyElement extends LitElement {
@@ -193,8 +272,6 @@ class MyElement extends LitElement {
   protected _active = false;
 }
 ```
-
-[Property change DEMO](https://lit.dev/playground/#sample=examples/properties-has-changed)
 
 ---
 
@@ -210,15 +287,35 @@ class MyElement extends LitElement {
 
 When a reactive property changes, the component schedules an update.
 **Internal reactive state** refers to **reactive properties** that aren't part of the component's API.
-~~**State properties** don't have corresponding attributes.~~
 **Internal reactive state** works just like public reactive properties, except that there is no attribute associated with the property.
+
+[Property change DEMO](https://lit.dev/playground/#sample=examples/properties-has-changed)
+
+---
+
+# [Trap](https://open-wc.org/guides/knowledge/lit-element/rendering/)
+
+LitElement's property system only observes changes to the object reference.
+Recursively listening for changes to child properties would be prohibitively expensive, especially for large nested objects.
+
+```js
+myEl.items; // [{ name: 'foo' }, { name: 'bar' }]
+// Won't trigger an update
+myEl.items[0].name = "baz";
+
+// example of updating the `changed` property on `myEl.items`
+myEl.items = {
+  ...myEl.items,
+  changed: newVal,
+};
+```
 
 ---
 
 # Downside of Lit
 
 - We abandoned `shadow DOM` in CEP. [Sample](https://lit.dev/docs/components/shadow-dom/#implementing-createrenderroot)
-  - UI Integration Cards
+  - UI Integration Cards `this.byId()`
   - TinyMCE Editor
 
 ---
@@ -256,11 +353,44 @@ Q: What's the potential risk of this approach?
 
 ---
 
+# Answer
+
+```css
+PARENT-COMPONENT .container {
+  color: blue;
+}
+
+CHILD-COMPONENT .container {
+  margin: 0;
+}
+
+// Forbidden
+PARENT-COMPONENT span {
+  color: blue;
+}
+```
+
+---
+
+[Styled Component](https://styled-components.com/docs)
+
+```css
+.hEYqLS {
+  margin: 0;
+}
+
+.jzwLKe {
+  float: right;
+}
+```
+
+---
+
 # Downside of Lit
 
 - As the app gets complicated, Lit could not satisfied the requirement.
   - Router
-  - Redux, State Store
+  - State Container(Redux)
 
 ---
 
