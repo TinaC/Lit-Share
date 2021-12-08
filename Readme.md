@@ -91,6 +91,7 @@ Used in Work Zone / CEP Page Editor
 ---
 
 As SAPUI5 is too heavy and hard to integrate with others...
+Here comes the Web Component:
 
 # UI5 Web Component
 
@@ -121,15 +122,15 @@ Used in WorkZone new features: AI Bots, Profile Avatar...
 
 # Summary
 
-- **Fiori**
+- **Fiori** : Design Guideline
 
-- SAPUI5
+- SAPUI5 : MVC + Rich Controls
 
   - OpenUI5
-    - UI Integration Cards
+    - UI Integration Cards: Special Control
 
-- Web Component
-  - UI5 Web Component
+- Web Component - Native API
+  - UI5 Web Component : Light Controls
     - UI5 Web Component for React
 
 ---
@@ -165,6 +166,8 @@ Core technologies:
 > Lit templates can include JavaScript expression.
 
 > [React JSX](https://reactjs.org/docs/introducing-jsx.html): JSX may remind you of a [template language](https://stackoverflow.com/questions/13654009/executing-javascript-inside-handlebars-template)(such as Handlebars), but it comes with the full power of JavaScript.
+
+> Handlebars and Mustache are LOGICLESS by design.
 
 [Expressions in Template, DEMO](https://lit.dev/playground/#sample=examples/expressions)
 
@@ -227,10 +230,10 @@ Reference:
 
 ---
 
-# Attribute Reflection
+# Transformation
 
-Most native attributes are synced to the javascript object, but not all native properties are reflected up to attributes.
-[NEED TO CHANGE]
+When the browser parses the HTML to create DOM objects for tags, it recognizes standard attributes and creates DOM properties from them.
+But that doesn’t happen if the attribute is **non-standard**.
 
 ```html
 <body id="test" something="non-standard">
@@ -238,9 +241,18 @@ Most native attributes are synced to the javascript object, but not all native p
     alert(document.body.id); // test
     // non-standard attribute does not yield a property
     alert(document.body.something); // undefined
+    // way to access non-standard attributes
+    alert(document.body.getAttribute("something")); // non-standard
   </script>
 </body>
 ```
+
+---
+
+# Attribute Reflection
+
+Most native attributes are synced to the javascript object, but not all native properties are reflected up to attributes.
+[NEED TO CHANGE]
 
 ---
 
