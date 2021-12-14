@@ -297,7 +297,7 @@ Most **native**(standard) attributes are synced to the javascript object, but **
 
 - When: setAttribute(), change object property
 - HTML Attribute <-> DOM Object Property
-- Target:
+- Target: Most native(standard) attributes are synced to the javascript object, but not all native properties are reflected up to attributes. 性能考虑
 
 ---
 
