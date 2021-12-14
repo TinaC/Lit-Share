@@ -235,6 +235,9 @@ Reference:
 When the browser parses the HTML to create DOM objects for tags, it recognizes standard attributes and creates DOM properties from them.
 But that doesn’t happen if the attribute is **non-standard**.
 
+在 parse HTML 的时候， attribute -> property
+非标准属性不会转化
+
 ```html
 <body id="test" something="non-standard">
   <script>
@@ -251,8 +254,64 @@ But that doesn’t happen if the attribute is **non-standard**.
 
 # Attribute Reflection
 
-Most native attributes are synced to the javascript object, but not all native properties are reflected up to attributes.
-[NEED TO CHANGE]
+Many native elements reflect their properties as attributes, and vice versa, like for example the `type` attribute on an input.
+
+在修改 attribute 的时候，某一些标准的属性，会同步/反射到 properties 上去，但是不是所有的属性都会
+
+```html
+<input type="text" />
+```
+
+```js
+console.log(myInput.type); // text
+console.log(myInput.getAttribute("type")); // text
+
+// If we change the type attribute to number, it will be synced with the property:
+myButton.setAttribute("type", "number");
+console.log(myInput.type); // number
+
+// If we set the property to date, it will be synced with the attribute:
+myButton.type = "date";
+console.log(myButton.getAttribute("type")); // date
+```
+
+---
+
+# Attribute Reflection
+
+Most **native**(standard) attributes are synced to the javascript object, but **not all** native properties are reflected up to attributes.
+
+> Reason: custom elements properties can update often and triggering a DOM change for each update can impact performance.
+
+---
+
+# Comparison
+
+## Transformation
+
+- When: Parse html
+- HTML Attribute -> DOM Object Property
+- Target: All standard attribute
+
+## Attribute Reflection
+
+- When: setAttribute(), change object property
+- HTML Attribute <-> DOM Object Property
+- Target:
+
+---
+
+# Lit Property Options
+
+```js
+class MyElement extends LitElement {
+  @property()
+  name: string;
+
+  @property({ type: Boolean, reflect: true })
+  active: boolean = false;
+}
+```
 
 ---
 
@@ -355,7 +414,7 @@ this.requstUpdate();
 
 # Omission
 
-- Lifecycle
+- [Lifecycle](https://lit.dev/docs/components/lifecycle/)
 - Events
 - Decorators, `@query`, `@property` ...
 - Template Directives, `classMap`, `until` ...
@@ -367,13 +426,20 @@ this.requstUpdate();
 - We abandoned `shadow DOM` in CEP. [Sample](https://lit.dev/docs/components/shadow-dom/#implementing-createrenderroot)
   - UI Integration Cards `this.byId()`
 
-```
-get shadowdomapi
+```js
+this.shadowRoot.getElementById('target');
+
+document.querySelector('popup-info').shadowRoot.querySelector('.wrapper');
+
+document.querySelector('popup-info').shadowRoot.querySelector('.wrapper')
+  .shadowRoot.querySelector('.grandChildren')...;
 ```
 
 ---
 
 # Render the template into the main DOM tree
+
+[Remove shadow Root](https://lit.dev/docs/components/shadow-dom/#implementing-createrenderroot)
 
 ```js
 // Default
@@ -391,9 +457,8 @@ override createRenderRoot(): LitElement {
 
 # How we handle Style Collision now?
 
-SAP-SHELL-SECTION 是什么
-
 ```css
+/* Case-insensitive CSS Type selectors*/
 SAP-SHELL-SECTION .container {
   --ui5_padding_left_right: calc(2rem + 0.1875rem);
 }
@@ -419,7 +484,7 @@ CHILD-COMPONENT .container {
   margin: 0;
 }
 
-// Element selector is Forbidden
+// Type selector is Forbidden
 PARENT-COMPONENT span {
   color: blue;
 }
@@ -444,7 +509,7 @@ PARENT-COMPONENT span {
 # Downside of Lit - Ecosystem
 
 - As the app gets complicated, Lit could not satisfied the requirement.
-  - Router
+  - Router(Vanilla JS)
   - State Container(Redux)
 
 ---
